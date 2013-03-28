@@ -3,6 +3,7 @@ package poly
 import (
 	"fmt"
 	"reflect"
+	"sort"
 )
 
 type PolyError string
@@ -17,6 +18,67 @@ func pe(format string, v ...interface{}) PolyError {
 
 func ppe(format string, v ...interface{}) {
 	panic(pe(format, v...))
+}
+
+type sortable struct {
+	less reflect.Value
+	xs   reflect.Value
+}
+
+func (s *sortable) Less(i, j int) bool {
+	ith, jth := s.xs.Index(i), s.xs.Index(j)
+	ret := s.less.Call([]reflect.Value{ith, jth})
+	return ret[0].Bool()
+}
+
+func (s *sortable) Swap(i, j int) {
+	ith := reflect.ValueOf(s.xs.Index(i).Interface())
+	s.xs.Index(i).Set(s.xs.Index(j))
+	s.xs.Index(j).Set(ith)
+}
+
+func (s *sortable) Len() int {
+	return s.xs.Len()
+}
+
+func Sort(less, xs interface{}) {
+	arg, _ := Unify(
+		new(func(func(A, A) bool, []A)),
+		less, xs)
+
+	rless, rxs := arg[0], arg[1]
+	sort.Sort(&sortable{rless, rxs})
+}
+
+func QuickSort(less, xs interface{}) interface{} {
+	arg, ret := Unify(
+		new(func(func(A, A) bool, []A) []A),
+		less, xs)
+	rless, rxs, tys := arg[0], arg[1], ret[0]
+
+	var qsort func(reflect.Value) reflect.Value
+	qsort = func(list reflect.Value) reflect.Value {
+		listLen := list.Len()
+		if listLen <= 1 {
+			return list
+		}
+
+		pivot := list.Index(0)
+		left := reflect.MakeSlice(tys, 0, listLen/2)
+		right := reflect.MakeSlice(tys, 0, listLen/2)
+
+		for i := 1; i < listLen; i++ {
+			el := list.Index(i)
+			if rless.Call([]reflect.Value{el, pivot})[0].Bool() {
+				left = reflect.Append(left, el)
+			} else {
+				right = reflect.Append(right, el)
+			}
+		}
+		return reflect.AppendSlice(reflect.Append(qsort(left), pivot),
+			qsort(right))
+	}
+	return qsort(rxs).Interface()
 }
 
 func Map(f, xs interface{}) interface{} {
@@ -37,6 +99,10 @@ func Unify(f interface{}, as ...interface{}) ([]reflect.Value, []reflect.Type) {
 	rf := reflect.ValueOf(f)
 	tf := rf.Type()
 
+	if tf.Kind() == reflect.Ptr {
+		rf = reflect.Indirect(rf)
+		tf = rf.Type()
+	}
 	if tf.Kind() != reflect.Func {
 		ppe("The type of `f` must be a function, but it is a '%s'.", tf.Kind())
 	}
@@ -85,7 +151,7 @@ func (tp typePair) panic(format string, v ...interface{}) {
 
 func (tp typePair) unify(param, input reflect.Type) {
 	if tyname := tyvarName(input); len(tyname) > 0 {
-		tp.panic("Type variables are not (yet) allowed in the types of "+
+		tp.panic("Type variables are not (yet) allowed in the types of " +
 			"input arguments.")
 	}
 	if tyname := tyvarName(param); len(tyname) > 0 {
@@ -120,7 +186,7 @@ func (tp typePair) unify(param, input reflect.Type) {
 
 type returnType struct {
 	tyenv tyenv
-	typ reflect.Type
+	typ   reflect.Type
 }
 
 func (rt returnType) panic(format string, v ...interface{}) {

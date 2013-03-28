@@ -34,4 +34,3 @@ type W tyvar
 type X tyvar
 type Y tyvar
 type Z tyvar
-
