@@ -25,6 +25,12 @@ func TestQuickSort(t *testing.T) {
 	sorted := QuickSort(func(a, b int) bool {
 		return b < a
 	}, tosort).([]int)
+
+	for _, n := range tosort {
+		fmt.Printf("%d ", n)
+	}
+	fmt.Println()
+
 	for _, n := range sorted {
 		fmt.Printf("%d ", n)
 	}
