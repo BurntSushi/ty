@@ -1,2 +1,2 @@
-Parametric polymorphism at run time for Go
+Parametric polymorphism at run time for Go.
 
