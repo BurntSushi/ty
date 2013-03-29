@@ -85,7 +85,7 @@ func (tp typePair) panic(format string, v ...interface{}) {
 
 func (tp typePair) unify(param, input reflect.Type) {
 	if tyname := tyvarName(input); len(tyname) > 0 {
-		tp.panic("Type variables are not (yet) allowed in the types of "+
+		tp.panic("Type variables are not (yet) allowed in the types of " +
 			"input arguments.")
 	}
 	if tyname := tyvarName(param); len(tyname) > 0 {
@@ -120,7 +120,7 @@ func (tp typePair) unify(param, input reflect.Type) {
 
 type returnType struct {
 	tyenv tyenv
-	typ reflect.Type
+	typ   reflect.Type
 }
 
 func (rt returnType) panic(format string, v ...interface{}) {
