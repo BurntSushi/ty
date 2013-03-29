@@ -8,7 +8,7 @@ import (
 
 // Keys has a parametric type:
 //
-//	func(m map[A]B) []A
+//	func Keys(m map[A]B) []A
 //
 // Keys returns a list of the keys of `m` in an unspecified order.
 func Keys(m interface{}) interface{} {
@@ -26,7 +26,7 @@ func Keys(m interface{}) interface{} {
 
 // Values has a parametric type:
 //
-//	func(m map[A]B) []B
+//	func Values(m map[A]B) []B
 //
 // Values returns a list of the values of `m` in an unspecified order.
 func Values(m interface{}) interface{} {

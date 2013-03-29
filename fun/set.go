@@ -8,7 +8,7 @@ import (
 
 // Union has a parametric type:
 //
-//	func(a map[A]bool, b map[A]bool) map[A]bool
+//	func Union(a map[A]bool, b map[A]bool) map[A]bool
 //
 // Union returns the union of two sets, where a set is represented as a
 // `map[A]bool`. The sets `a` and `b` are not modified.
@@ -31,7 +31,7 @@ func Union(a, b interface{}) interface{} {
 
 // Intersection has a parametric type:
 //
-//	func(a map[A]bool, b map[A]bool) map[A]bool
+//	func Intersection(a map[A]bool, b map[A]bool) map[A]bool
 //
 // Intersection returns the intersection of two sets, where a set is
 // represented as a `map[A]bool`. The sets `a` and `b` are not modified.

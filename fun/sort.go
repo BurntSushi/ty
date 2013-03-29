@@ -9,7 +9,7 @@ import (
 
 // QuickSort has a parametric type:
 //
-//	func(less func(x1 A, x2 A) bool, []A) []A
+//	func QuickSort(less func(x1 A, x2 A) bool, []A) []A
 //
 // QuickSort applies the "quicksort" algorithm to return a new sorted list
 // of `xs`, where `xs` is not modified.
@@ -60,7 +60,7 @@ func QuickSort(less, xs interface{}) interface{} {
 
 // Sort has a parametric type:
 //
-//	func(less func(x1 A, x2 A) bool, []A)
+//	func Sort(less func(x1 A, x2 A) bool, []A)
 //
 // Sort uses the standard library `sort` package to sort `xs` in place.
 //

@@ -8,7 +8,7 @@ import (
 
 // Map has a parametric type:
 //
-//	func(f func(A) B, xs []A) []B
+//	func Map(f func(A) B, xs []A) []B
 //
 // Map returns the list corresponding to the return value of applying
 // `f` to each element in `xs`.
