@@ -10,7 +10,7 @@ import (
 //	type myOwnTypeVariable TypeVariable
 //
 // to create your own type variable. For your convenience, this package
-// defines some type variables for you.
+// defines some type variables for you. (e.g., `A`, `B`, `C`, ...)
 type TypeVariable struct {
 	noImitation struct{}
 }
