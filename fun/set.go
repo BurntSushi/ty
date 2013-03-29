@@ -6,6 +6,12 @@ import (
 	"github.com/BurntSushi/ty"
 )
 
+// Union has a parametric type:
+//
+//	func(a map[A]bool, b map[A]bool) map[A]bool
+//
+// Union returns the union of two sets, where a set is represented as a
+// `map[A]bool`. The sets `a` and `b` are not modified.
 func Union(a, b interface{}) interface{} {
 	uni := ty.Unify(
 		new(func(map[ty.A]bool, map[ty.A]bool) map[ty.A]bool),
@@ -23,6 +29,12 @@ func Union(a, b interface{}) interface{} {
 	return vc.Interface()
 }
 
+// Intersection has a parametric type:
+//
+//	func(a map[A]bool, b map[A]bool) map[A]bool
+//
+// Intersection returns the intersection of two sets, where a set is
+// represented as a `map[A]bool`. The sets `a` and `b` are not modified.
 func Intersection(a, b interface{}) interface{} {
 	uni := ty.Unify(
 		new(func(map[ty.A]bool, map[ty.A]bool) map[ty.A]bool),

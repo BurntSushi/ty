@@ -6,6 +6,12 @@ import (
 	"github.com/BurntSushi/ty"
 )
 
+// Map has a parametric type:
+//
+//	func(f func(A) B, xs []A) []B
+//
+// Map returns the list corresponding to the return value of applying
+// `f` to each element in `xs`.
 func Map(f, xs interface{}) interface{} {
 	uni := ty.Unify(
 		new(func(func(ty.A) ty.B, []ty.A) []ty.B),

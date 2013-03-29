@@ -6,6 +6,11 @@ import (
 	"github.com/BurntSushi/ty"
 )
 
+// Keys has a parametric type:
+//
+//	func(m map[A]B) []A
+//
+// Keys returns a list of the keys of `m` in an unspecified order.
 func Keys(m interface{}) interface{} {
 	uni := ty.Unify(
 		new(func(map[ty.A]ty.B) []ty.A),
@@ -19,6 +24,11 @@ func Keys(m interface{}) interface{} {
 	return vkeys.Interface()
 }
 
+// Values has a parametric type:
+//
+//	func(m map[A]B) []B
+//
+// Values returns a list of the values of `m` in an unspecified order.
 func Values(m interface{}) interface{} {
 	uni := ty.Unify(
 		new(func(map[ty.A]ty.B) []ty.B),
