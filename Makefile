@@ -1,5 +1,7 @@
+all: install
+
 install:
-	go install
+	go install ./...
 
 fmt:
 	gofmt -w *.go */*.go

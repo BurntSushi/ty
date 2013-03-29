@@ -1,47 +1,32 @@
-package poly
+package fun
 
 import (
 	"fmt"
+	"math/rand"
+	"reflect"
 	"testing"
+	"time"
 )
 
-func square(x int) int {
-	return x * x
+var (
+	pf  = fmt.Printf
+	rng *rand.Rand
+)
+
+func init() {
+	rng = rand.New(rand.NewSource(time.Now().UnixNano()))
 }
 
-func TestSort(t *testing.T) {
-	tosort := []int{10, 3, 5, 1, 15, 6}
-	Sort(func(a, b int) bool {
-		return b < a
-	}, tosort)
-	for _, n := range tosort {
-		fmt.Printf("%d ", n)
+func assertDeep(t *testing.T, v1, v2 interface{}) {
+	if !reflect.DeepEqual(v1, v2) {
+		t.Fatalf("%v != %v", v1, v2)
 	}
-	fmt.Println()
 }
 
-func TestQuickSort(t *testing.T) {
-	tosort := []int{10, 3, 5, 1, 15, 6}
-	sorted := QuickSort(func(a, b int) bool {
-		return b < a
-	}, tosort).([]int)
-
-	for _, n := range tosort {
-		fmt.Printf("%d ", n)
+func randIntSlice(size int) []int {
+	slice := make([]int, size)
+	for i := 0; i < size; i++ {
+		slice[i] = rng.Intn(1000000)
 	}
-	fmt.Println()
-
-	for _, n := range sorted {
-		fmt.Printf("%d ", n)
-	}
-	fmt.Println()
-}
-
-func TestMap(t *testing.T) {
-	squares := Map(square, []int{1, 2, 3, 4, 5}).([]int)
-	for _, sq := range squares {
-		fmt.Printf("%d ", sq)
-	}
-	fmt.Println()
-	// fmt.Printf("%v\n", Map(square, []int{1, 2, 3, 4, 5}))
+	return slice
 }
