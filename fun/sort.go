@@ -14,8 +14,8 @@ import (
 // QuickSort applies the "quicksort" algorithm to return a new sorted list
 // of `xs`, where `xs` is not modified.
 //
-// `less` should be a function that returns true if and only if x1 is less
-// than x2.
+// `less` should be a function that returns true if and only if `x1` is less
+// than `x2`.
 func QuickSort(less, xs interface{}) interface{} {
 	uni := ty.Unify(
 		new(func(func(ty.A, ty.A) bool, []ty.A) []ty.A),
@@ -64,8 +64,8 @@ func QuickSort(less, xs interface{}) interface{} {
 //
 // Sort uses the standard library `sort` package to sort `xs` in place.
 //
-// `less` should be a function that returns true if and only if x1 is less
-// than x2.
+// `less` should be a function that returns true if and only if `x1` is less
+// than `x2`.
 func Sort(less, xs interface{}) {
 	uni := ty.Unify(
 		new(func(func(ty.A, ty.A) bool, []ty.A)),
