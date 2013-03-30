@@ -26,3 +26,97 @@ func Map(f, xs interface{}) interface{} {
 	}
 	return vys.Interface()
 }
+
+// Filter has a parametric type:
+//
+//	func Filter(p func(A) bool, xs []A) []A
+//
+// Filter returns a new list only containing the elements of `xs` that satisfy
+// the predicate `p`.
+func Filter(p, xs interface{}) interface{} {
+	uni := ty.Unify(
+		new(func(func(ty.A) bool, []ty.A) []ty.A),
+		p, xs)
+	vp, vxs, tys := uni.Args[0], uni.Args[1], uni.Returns[0]
+
+	xsLen := vxs.Len()
+	vys := reflect.MakeSlice(tys, 0, xsLen)
+	for i := 0; i < xsLen; i++ {
+		vx := vxs.Index(i)
+		if ty.Call1(vp, vx).Bool() {
+			vys = reflect.Append(vys, vx)
+		}
+	}
+	return vys.Interface()
+}
+
+// Foldl has a parametric type:
+//
+//	func Foldl(f func(A, B) B, init B, xs []A) B
+//
+// Foldl reduces a list of A to a single element B using a left fold with
+// an initial value `init`.
+func Foldl(f, init, xs interface{}) interface{} {
+	uni := ty.Unify(
+		new(func(func(ty.A, ty.B) ty.B, ty.B, []ty.A) ty.B),
+		f, init, xs)
+	vf, vinit, vxs, tb := uni.Args[0], uni.Args[1], uni.Args[2], uni.Returns[0]
+
+	xsLen := vxs.Len()
+	vb := ty.ZeroValue(tb)
+	vb.Set(vinit)
+	if xsLen == 0 {
+		return vb.Interface()
+	}
+
+	vb.Set(ty.Call1(vf, vxs.Index(0), vb))
+	for i := 1; i < xsLen; i++ {
+		vb.Set(ty.Call1(vf, vxs.Index(i), vb))
+	}
+	return vb.Interface()
+}
+
+// Foldr has a parametric type:
+//
+//	func Foldr(f func(A, B) B, init B, xs []A) B
+//
+// Foldr reduces a list of A to a single element B using a right fold with
+// an initial value `init`.
+func Foldr(f, init, xs interface{}) interface{} {
+	uni := ty.Unify(
+		new(func(func(ty.A, ty.B) ty.B, ty.B, []ty.A) ty.B),
+		f, init, xs)
+	vf, vinit, vxs, tb := uni.Args[0], uni.Args[1], uni.Args[2], uni.Returns[0]
+
+	xsLen := vxs.Len()
+	vb := ty.ZeroValue(tb)
+	vb.Set(vinit)
+	if xsLen == 0 {
+		return vb.Interface()
+	}
+
+	vb.Set(ty.Call1(vf, vxs.Index(xsLen-1), vb))
+	for i := xsLen - 2; i >= 0; i-- {
+		vb.Set(ty.Call1(vf, vxs.Index(i), vb))
+	}
+	return vb.Interface()
+}
+
+// Concat has a parametric type:
+//
+//	func Concat(xs [][]A) []A
+//
+// Concat returns a new flattened list by appending all elements of `xs`.
+func Concat(xs interface{}) interface{} {
+	uni := ty.Unify(
+		new(func([][]ty.A) []ty.A),
+		xs)
+	vxs, tflat := uni.Args[0], uni.Returns[0]
+
+	xsLen := vxs.Len()
+	vflat := reflect.MakeSlice(tflat, 0, xsLen*3)
+	for i := 0; i < xsLen; i++ {
+		vflat = reflect.AppendSlice(vflat, vxs.Index(i))
+	}
+	return vflat.Interface()
+}

@@ -1,6 +1,7 @@
 package fun
 
 import (
+	"sort"
 	"testing"
 )
 
@@ -21,7 +22,15 @@ func TestQuickSort(t *testing.T) {
 	assertDeep(t, sorted, []int{15, 10, 6, 5, 3, 1})
 }
 
-func BenchmarkSortReflect(b *testing.B) {
+func BenchmarkSort(b *testing.B) {
+	if flagBuiltin {
+		benchmarkSortBuiltin(b)
+	} else {
+		benchmarkSortReflect(b)
+	}
+}
+
+func benchmarkSortReflect(b *testing.B) {
 	less := func(a, b int) bool { return a < b }
 
 	for i := 0; i < b.N; i++ {
@@ -33,7 +42,7 @@ func BenchmarkSortReflect(b *testing.B) {
 	}
 }
 
-func BenchmarkSortBuiltin(b *testing.B) {
+func benchmarkSortBuiltin(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
 		list := randIntSlice(1000)
@@ -43,7 +52,15 @@ func BenchmarkSortBuiltin(b *testing.B) {
 	}
 }
 
-func BenchmarkQuickSortReflect(b *testing.B) {
+func BenchmarkQuickSort(b *testing.B) {
+	if flagBuiltin {
+		benchmarkQuickSortBuiltin(b)
+	} else {
+		benchmarkQuickSortReflect(b)
+	}
+}
+
+func benchmarkQuickSortReflect(b *testing.B) {
 	less := func(a, b int) bool { return a < b }
 
 	for i := 0; i < b.N; i++ {
@@ -55,7 +72,7 @@ func BenchmarkQuickSortReflect(b *testing.B) {
 	}
 }
 
-func BenchmarkQuickSortBuiltin(b *testing.B) {
+func benchmarkQuickSortBuiltin(b *testing.B) {
 	less := func(a, b int) bool { return a < b }
 
 	quicksort := func(xs []int) []int {

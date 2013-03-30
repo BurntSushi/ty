@@ -1,6 +1,7 @@
 package fun
 
 import (
+	"flag"
 	"fmt"
 	"math/rand"
 	"reflect"
@@ -9,12 +10,16 @@ import (
 )
 
 var (
-	pf  = fmt.Printf
-	rng *rand.Rand
+	pf          = fmt.Printf
+	rng         *rand.Rand
+	flagBuiltin = false
 )
 
 func init() {
 	rng = rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	flag.BoolVar(&flagBuiltin, "builtin", flagBuiltin,
+		"When set, benchmarks for non-type parametric functions are run.")
 }
 
 func assertDeep(t *testing.T, v1, v2 interface{}) {

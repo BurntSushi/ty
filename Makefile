@@ -3,6 +3,19 @@ all: install
 install:
 	go install ./...
 
+test: install
+	cd fun \
+	&& go test
+
+benchcmp: install
+	cd fun \
+	&& echo "Running reflection benchmarks..." \
+	&& go test -run NONE -benchmem -bench . > reflect.bench \
+	&& echo "Running built in benchmarks..." \
+	&& go test -run NONE -benchmem -bench . -builtin > builtin.bench  \
+	&& benchcmp builtin.bench reflect.bench > ../data/cmp.bench \
+	&& rm builtin.bench reflect.bench
+
 fmt:
 	gofmt -w *.go */*.go
 	colcheck *.go */*.go
