@@ -1,0 +1,14 @@
+benchmark             old ns/op    new ns/op    delta
+BenchmarkMap               5814       449696  +7634.71%
+BenchmarkSort            136070      7564856  +5459.53%
+BenchmarkQuickSort         2190      6329073  +288898.77%
+
+benchmark            old allocs   new allocs    delta
+BenchmarkMap                  1         2021  202000.00%
+BenchmarkSort                 1        27101  2710000.00%
+BenchmarkQuickSort            1        22115  2211400.00%
+
+benchmark             old bytes    new bytes    delta
+BenchmarkMap               8294        60119  624.85%
+BenchmarkSort               137       910963  664836.50%
+BenchmarkQuickSort         8192       751440  9072.85%
