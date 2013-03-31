@@ -35,7 +35,7 @@ func benchmarkSortReflect(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		list := randIntSlice(1000)
+		list := randIntSlice(1000, 0)
 		b.StartTimer()
 
 		Sort(less, list)
@@ -45,7 +45,7 @@ func benchmarkSortReflect(b *testing.B) {
 func benchmarkSortBuiltin(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		list := randIntSlice(1000)
+		list := randIntSlice(1000, 0)
 		b.StartTimer()
 
 		sort.Sort(sort.IntSlice(list))
@@ -65,7 +65,7 @@ func benchmarkQuickSortReflect(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		list := randIntSlice(1000)
+		list := randIntSlice(1000, 0)
 		b.StartTimer()
 
 		_ = QuickSort(less, list)
@@ -112,7 +112,7 @@ func benchmarkQuickSortBuiltin(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		list := randIntSlice(1000)
+		list := randIntSlice(1000, 0)
 		b.StartTimer()
 
 		_ = quicksort(list)

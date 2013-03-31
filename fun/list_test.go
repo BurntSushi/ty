@@ -65,39 +65,66 @@ func TestPointers(t *testing.T) {
 	})
 }
 
-func BenchmarkMap(b *testing.B) {
+func BenchmarkMapSquare(b *testing.B) {
 	if flagBuiltin {
-		benchmarkMapBuiltin(b)
+		benchmarkMapSquareBuiltin(b)
 	} else {
-		benchmarkMapReflect(b)
+		benchmarkMapSquareReflect(b)
 	}
 }
 
-func benchmarkMapReflect(b *testing.B) {
+func benchmarkMapSquareReflect(b *testing.B) {
 	b.StopTimer()
-	list := randIntSlice(1000)
-	square := func(a int) int {
-		return a * a
-	}
+	square := func(a int64) int64 { return a * a }
+	list := randInt64Slice(1000, 1<<30)
 	b.StartTimer()
 
 	for i := 0; i < b.N; i++ {
-		_ = Map(square, list).([]int)
+		_ = Map(square, list).([]int64)
 	}
 }
 
-func benchmarkMapBuiltin(b *testing.B) {
+func benchmarkMapSquareBuiltin(b *testing.B) {
 	b.StopTimer()
-	list := randIntSlice(1000)
-	square := func(a int) int {
-		return a * a
-	}
+	square := func(a int64) int64 { return a * a }
+	list := randInt64Slice(1000, 1<<30)
 	b.StartTimer()
 
 	for i := 0; i < b.N; i++ {
-		ret := make([]int, len(list))
+		ret := make([]int64, len(list))
 		for i := 0; i < len(list); i++ {
 			ret[i] = square(list[i])
+		}
+	}
+}
+
+func BenchmarkMapPrime(b *testing.B) {
+	if flagBuiltin {
+		benchmarkMapPrimeBuiltin(b)
+	} else {
+		benchmarkMapPrimeReflect(b)
+	}
+}
+
+func benchmarkMapPrimeReflect(b *testing.B) {
+	b.StopTimer()
+	list := randInt64Slice(1000, 1<<30)
+	b.StartTimer()
+
+	for i := 0; i < b.N; i++ {
+		_ = Map(primeFactors, list).([][]int64)
+	}
+}
+
+func benchmarkMapPrimeBuiltin(b *testing.B) {
+	b.StopTimer()
+	list := randInt64Slice(1000, 1<<30)
+	b.StartTimer()
+
+	for i := 0; i < b.N; i++ {
+		ret := make([][]int64, len(list))
+		for i := 0; i < len(list); i++ {
+			ret[i] = primeFactors(list[i])
 		}
 	}
 }

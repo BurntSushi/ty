@@ -2,6 +2,8 @@ package fun
 
 import (
 	"reflect"
+	"runtime"
+	"sync"
 
 	"github.com/BurntSushi/ty"
 )
@@ -119,4 +121,46 @@ func Concat(xs interface{}) interface{} {
 		vflat = reflect.AppendSlice(vflat, vxs.Index(i))
 	}
 	return vflat.Interface()
+}
+
+// ParMap has a parametric type:
+//
+//	func Map(f func(A) B, xs []A) []B
+//
+// ParMap is just like Map, except it applies `f` to each element in `xs`
+// concurrently using N worker goroutines (where N is the number of CPUs
+// available reported by the Go runtime).
+//
+// It is important that `f` not be a trivial operation, otherwise the overhead
+// of executing it concurrently will result in worse performance.
+func ParMap(f, xs interface{}) interface{} {
+	uni := ty.Unify(
+		new(func(func(ty.A) ty.B, []ty.A) []ty.B),
+		f, xs)
+	vf, vxs, tys := uni.Args[0], uni.Args[1], uni.Returns[0]
+
+	xsLen := vxs.Len()
+	ys := reflect.MakeSlice(tys, xsLen, xsLen)
+
+	N := runtime.NumCPU()
+	if N < 1 {
+		N = 1
+	}
+	work := make(chan int, N)
+	wg := new(sync.WaitGroup)
+	for i := 0; i < N; i++ {
+		wg.Add(1)
+		go func() {
+			for j := range work {
+				ys.Index(j).Set(ty.Call1(vf, vxs.Index(j)))
+			}
+			wg.Done()
+		}()
+	}
+	for i := 0; i < xsLen; i++ {
+		work <- i
+	}
+	close(work)
+	wg.Wait()
+	return ys.Interface()
 }

@@ -28,10 +28,24 @@ func assertDeep(t *testing.T, v1, v2 interface{}) {
 	}
 }
 
-func randIntSlice(size int) []int {
+func randIntSlice(size, max int) []int {
+	if max == 0 {
+		max = 1000000
+	}
 	slice := make([]int, size)
 	for i := 0; i < size; i++ {
-		slice[i] = rng.Intn(1000000)
+		slice[i] = rng.Intn(max)
+	}
+	return slice
+}
+
+func randInt64Slice(size, max int64) []int64 {
+	if max == 0 {
+		max = 1000000
+	}
+	slice := make([]int64, size)
+	for i := int64(0); i < size; i++ {
+		slice[i] = rng.Int63n(max)
 	}
 	return slice
 }

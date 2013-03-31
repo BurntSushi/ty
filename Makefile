@@ -10,9 +10,9 @@ test: install
 benchcmp: install
 	cd fun \
 	&& echo "Running reflection benchmarks..." \
-	&& go test -run NONE -benchmem -bench . > reflect.bench \
+	&& go test -cpu 12 -run NONE -benchmem -bench . > reflect.bench \
 	&& echo "Running built in benchmarks..." \
-	&& go test -run NONE -benchmem -bench . -builtin > builtin.bench  \
+	&& go test -cpu 12 -run NONE -benchmem -bench . -builtin > builtin.bench  \
 	&& benchcmp builtin.bench reflect.bench > ../data/cmp.bench \
 	&& rm builtin.bench reflect.bench
 
