@@ -165,3 +165,18 @@ func ParMap(f, xs interface{}) interface{} {
 	wg.Wait()
 	return ys.Interface()
 }
+
+// Range generates a list of integers corresponding to every integer in
+// the half-open interval [x, y).
+//
+// Range will panic if `end < start`.
+func Range(start, end int) []int {
+	if end < start {
+		panic("range must have end greater than or equal to start")
+	}
+	r := make([]int, end-start)
+	for i := start; i < end; i++ {
+		r[i-start] = i
+	}
+	return r
+}
