@@ -4,7 +4,9 @@ import (
 	"fmt"
 )
 
-func ExamplePrimeNumberSieve() {
+func ExampleFoldr() {
+	// The prime number sieve.
+
 	bound := 100
 
 	primes := Foldr(
