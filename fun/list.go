@@ -132,7 +132,8 @@ func Concat(xs interface{}) interface{} {
 // available reported by the Go runtime).
 //
 // It is important that `f` not be a trivial operation, otherwise the overhead
-// of executing it concurrently will result in worse performance.
+// of executing it concurrently will result in worse performance than using
+// a `Map`.
 func ParMap(f, xs interface{}) interface{} {
 	uni := ty.Unify(
 		new(func(func(ty.A) ty.B, []ty.A) []ty.B),
