@@ -35,10 +35,3 @@ func Call2(f reflect.Value, args ...reflect.Value) (
 	ret := f.Call(args)
 	return ret[0], ret[1]
 }
-
-func Call3(f reflect.Value, args ...reflect.Value) (
-	reflect.Value, reflect.Value, reflect.Value) {
-
-	ret := f.Call(args)
-	return ret[0], ret[1], ret[2]
-}
