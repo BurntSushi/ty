@@ -61,11 +61,11 @@ type Typed struct {
 //	func Map(func(A) B, []A) []B
 //
 // which in English reads, "Given a function from any type `A` to any type `B`
-// and a slice of `A`, Map returns a slice of `B`."
+// and a slice of `A`, `Map` returns a slice of `B`."
 //
-// In order to write a parametric function like `Map`, one can pass a pointer
-// to a nil function of the desired parametric type in order to get the
-// reflection information to write function:
+// To write a parametric function like `Map`, one can pass a pointer
+// to a nil function of the desired parametric type to get the reflection
+// information:
 //
 //	func Map(f, xs interface{}) interface{} {
 //		uni := ty.Check(
