@@ -12,7 +12,7 @@ import (
 //
 // Set creates a set from a list.
 func Set(xs interface{}) interface{} {
-	uni := ty.Unify(
+	uni := ty.Check(
 		new(func([]ty.A) map[ty.A]bool),
 		xs)
 	vxs, tset := uni.Args[0], uni.Returns[0]
@@ -33,7 +33,7 @@ func Set(xs interface{}) interface{} {
 // Union returns the union of two sets, where a set is represented as a
 // `map[A]bool`. The sets `a` and `b` are not modified.
 func Union(a, b interface{}) interface{} {
-	uni := ty.Unify(
+	uni := ty.Check(
 		new(func(map[ty.A]bool, map[ty.A]bool) map[ty.A]bool),
 		a, b)
 	va, vb, tc := uni.Args[0], uni.Args[1], uni.Returns[0]
@@ -56,7 +56,7 @@ func Union(a, b interface{}) interface{} {
 // Intersection returns the intersection of two sets, where a set is
 // represented as a `map[A]bool`. The sets `a` and `b` are not modified.
 func Intersection(a, b interface{}) interface{} {
-	uni := ty.Unify(
+	uni := ty.Check(
 		new(func(map[ty.A]bool, map[ty.A]bool) map[ty.A]bool),
 		a, b)
 	va, vb, tc := uni.Args[0], uni.Args[1], uni.Returns[0]
@@ -83,7 +83,7 @@ func Intersection(a, b interface{}) interface{} {
 // Difference returns a set with all elements in `a` that are not in `b`.
 // The sets `a` and `b` are not modified.
 func Difference(a, b interface{}) interface{} {
-	uni := ty.Unify(
+	uni := ty.Check(
 		new(func(map[ty.A]bool, map[ty.A]bool) map[ty.A]bool),
 		a, b)
 	va, vb, tc := uni.Args[0], uni.Args[1], uni.Returns[0]

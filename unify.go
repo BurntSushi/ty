@@ -5,27 +5,102 @@ import (
 	"reflect"
 )
 
-type PolyError string
+// TypeError corresponds to any error reported by the `Check` function.
+// Since `Check` panics, if you want to run `Check` safely, it is
+// appropriate to recover and use a type switch to discover a `TypeError`
+// value.
+type TypeError string
 
-func (pe PolyError) Error() string {
-	return string(pe)
+func (te TypeError) Error() string {
+	return string(te)
 }
 
-func pe(format string, v ...interface{}) PolyError {
-	return PolyError(fmt.Sprintf(format, v...))
+func pe(format string, v ...interface{}) TypeError {
+	return TypeError(fmt.Sprintf(format, v...))
 }
 
 func ppe(format string, v ...interface{}) {
 	panic(pe(format, v...))
 }
 
-type Unified struct {
-	Args    []reflect.Value
+// Typed corresponds to the information returned by `Check`.
+type Typed struct {
+	// In correspondence with the `as` parameter to `Check`.
+	Args []reflect.Value
+
+	// In correspondence with the return types of `f` in `Check`.
 	Returns []reflect.Type
+
+	// The type environment generated via unification in `Check`.
+	// (Its usefulness in the public API is questionable.)
 	TypeEnv map[string]reflect.Type
 }
 
-func Unify(f interface{}, as ...interface{}) *Unified {
+// Check accepts a function `f`, which may have a parametric type, along with a
+// number of arguments in correspondence with the arguments to `f`,
+// and returns inferred Go type information. This type information includes
+// a list of `reflect.Value` in correspondence with `as`, a list of
+// `reflect.Type` in correspondence with the return types of `f` and a type
+// environment mapping type variables to `reflect.Type`.
+//
+// The power of `Check` comes from the following invariant: if `Check` returns,
+// then the types of the input arguments corresponding to `as` are consistent
+// with the parametric type of `f`, *and* the parametric return types of `f`
+// were made into valid Go types that are not parametric. Otherwise, there is
+// a bug in `Check`.
+//
+// More concretely, consider a simple parametric function `Map`, which
+// transforms a list of elements by applying a function to each element in
+// order to generate a new list. Such a function constructed only for integers
+// might have a type like
+//
+//	func Map(func(int) int, []int) []int
+//
+// But the parametric type of `Map` could be given with
+//
+//	func Map(func(A) B, []A) []B
+//
+// which in English reads, "Given a function from any type `A` to any type `B`
+// and a slice of `A`, Map returns a slice of `B`."
+//
+// In order to write a parametric function like `Map`, one can pass a pointer
+// to a nil function of the desired parametric type in order to get the
+// reflection information to write function:
+//
+//	func Map(f, xs interface{}) interface{} {
+//		uni := ty.Check(
+//			new(func(func(ty.A) ty.B, []ty.A) []ty.B),
+//			f, xs)
+//		vf, vxs, tys := uni.Args[0], uni.Args[1], uni.Returns[0]
+//
+//		xsLen := vxs.Len()
+//		vys := reflect.MakeSlice(tys, xsLen, xsLen)
+//		for i := 0; i < xsLen; i++ {
+//			vy := ty.Call1(vf, vxs.Index(i))
+//			vys.Index(i).Set(vy)
+//		}
+//		return vys.Interface()
+//	}
+//
+// And while writing such functions is inconvenient, invoking them is simple:
+//
+//	square := func(x int) int { return x * x }
+//	squared := Map(square, []int{1, 2, 3, 4, 5}).([]int)
+//
+// Restrictions
+//
+// There are a few restrictions imposed on the parametric return types of
+// `f`: type variables may only be found in types that can be composed by the
+// `reflect` package. This *only* includes channels, maps, pointers and slices.
+// If a type variable is found in an array, function or struct, `Check` will
+// panic.
+//
+// Also, type variables inside of structs are ignored in the types of the
+// input arguments `as`. This restriction may be lifted in the future.
+//
+// To be clear: type variables *may* appear in arrays or functions in the types
+// of the input arguments `as`.
+func Check(f interface{}, as ...interface{}) *Typed {
 	rf := reflect.ValueOf(f)
 	tf := rf.Type()
 
@@ -61,11 +136,16 @@ func Unify(f interface{}, as ...interface{}) *Unified {
 	for i := 0; i < tf.NumOut(); i++ {
 		retTypes[i] = (&returnType{tyenv, tf.Out(i)}).tysubst(tf.Out(i))
 	}
-	return &Unified{args, retTypes, map[string]reflect.Type(tyenv)}
+	return &Typed{args, retTypes, map[string]reflect.Type(tyenv)}
 }
 
+// tyenv maps type variable names to their inferred Go type.
 type tyenv map[string]reflect.Type
 
+// typePair represents a pair of types to be unified. They act as a way to
+// report sensible error messages from within the unification algorithm.
+//
+// It also includes a type environment, which is mutated during unification.
 type typePair struct {
 	tyenv tyenv
 	param reflect.Type
@@ -77,9 +157,19 @@ func (tp typePair) panic(format string, v ...interface{}) {
 		tp.param, tp.input, fmt.Sprintf(format, v...))
 }
 
+// unify attempts to satisfy a pair of types, where the `param` type is the
+// expected type of a function argument and the `input` type is the known
+// type of a function argument. The `param` type may be parametric (that is,
+// it may contain a type that is convertible to TypeVariable) but the
+// `input` type may *not* be parametric.
+//
+// Any failure to unify the two types results in a panic.
+//
+// The end result of unification is a type environment: a set of substitutions
+// from type variable to a Go type.
 func (tp typePair) unify(param, input reflect.Type) {
 	if tyname := tyvarName(input); len(tyname) > 0 {
-		tp.panic("Type variables are not (yet) allowed in the types of " +
+		tp.panic("Type variables are not allowed in the types of " +
 			"input arguments.")
 	}
 	if tyname := tyvarName(param); len(tyname) > 0 {
@@ -130,6 +220,9 @@ func (tp typePair) unify(param, input reflect.Type) {
 	// variables inside of them.
 }
 
+// returnType corresponds to the type of a single return value of a function,
+// in which the type may be parametric. It also contains a type environment
+// constructed from unification.
 type returnType struct {
 	tyenv tyenv
 	typ   reflect.Type
@@ -140,6 +233,12 @@ func (rt returnType) panic(format string, v ...interface{}) {
 		rt.typ, fmt.Sprintf(format, v...))
 }
 
+// tysubst attempts to substitute all type variables within a single return
+// type with their corresponding Go type from the type environment.
+//
+// tysubst will panic if a type variable is unbound, or if it encounters a
+// type that cannot be dynamically created. Such types include arrays,
+// functions and structs. (A limitation of the `reflect` package.)
 func (rt returnType) tysubst(typ reflect.Type) reflect.Type {
 	if tyname := tyvarName(typ); len(tyname) > 0 {
 		if thetype, ok := rt.tyenv[tyname]; !ok {

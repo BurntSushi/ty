@@ -12,7 +12,7 @@ import (
 //
 // Keys returns a list of the keys of `m` in an unspecified order.
 func Keys(m interface{}) interface{} {
-	uni := ty.Unify(
+	uni := ty.Check(
 		new(func(map[ty.A]ty.B) []ty.A),
 		m)
 	vm, tkeys := uni.Args[0], uni.Returns[0]
@@ -30,7 +30,7 @@ func Keys(m interface{}) interface{} {
 //
 // Values returns a list of the values of `m` in an unspecified order.
 func Values(m interface{}) interface{} {
-	uni := ty.Unify(
+	uni := ty.Check(
 		new(func(map[ty.A]ty.B) []ty.B),
 		m)
 	vm, tvals := uni.Args[0], uni.Returns[0]
