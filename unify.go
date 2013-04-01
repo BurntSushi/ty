@@ -91,7 +91,7 @@ type Typed struct {
 //		// Actually perform the `Map` operation, but in the world of
 //		// reflection.
 //		for i := 0; i < xsLen; i++ {
-//			vy := ty.Call1(vf, vxs.Index(i))
+//			vy := vf.Call([]reflect.Value{vxs.Index(i)})[0]
 //			vys.Index(i).Set(vy)
 //		}
 //
