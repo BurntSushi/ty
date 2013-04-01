@@ -27,7 +27,7 @@ func QuickSort(less, xs interface{}) interface{} {
 
 	var qsort func(left, right int)
 	var partition func(left, right, pivot int) int
-	swapper := ty.SwapperOf(vys.Type().Elem())
+	swapper := swapperOf(vys.Type().Elem())
 
 	qsort = func(left, right int) {
 		if left >= right {
@@ -40,18 +40,18 @@ func QuickSort(less, xs interface{}) interface{} {
 		qsort(pivot+1, right)
 	}
 	partition = func(left, right, pivot int) int {
-		swapper.Swap(vys.Index(pivot), vys.Index(right))
+		swapper.swap(vys.Index(pivot), vys.Index(right))
 		vpivot := vys.Index(right)
 
 		ind := left
 		for i := left; i < right; i++ {
 			temp := vys.Index(i)
-			if ty.Call1(vless, temp, vpivot).Bool() {
-				swapper.Swap(temp, vys.Index(ind))
+			if call1(vless, temp, vpivot).Bool() {
+				swapper.swap(temp, vys.Index(ind))
 				ind++
 			}
 		}
-		swapper.Swap(vys.Index(ind), vys.Index(right))
+		swapper.swap(vys.Index(ind), vys.Index(right))
 		return ind
 	}
 	qsort(0, vys.Len()-1)
@@ -72,22 +72,22 @@ func Sort(less, xs interface{}) {
 		less, xs)
 
 	vless, vxs := uni.Args[0], uni.Args[1]
-	sort.Sort(&sortable{vless, vxs, ty.SwapperOf(vxs.Type().Elem())})
+	sort.Sort(&sortable{vless, vxs, swapperOf(vxs.Type().Elem())})
 }
 
 type sortable struct {
 	less    reflect.Value
 	xs      reflect.Value
-	swapper ty.Swapper
+	swapper swapper
 }
 
 func (s *sortable) Less(i, j int) bool {
 	ith, jth := s.xs.Index(i), s.xs.Index(j)
-	return ty.Call1(s.less, ith, jth).Bool()
+	return call1(s.less, ith, jth).Bool()
 }
 
 func (s *sortable) Swap(i, j int) {
-	s.swapper.Swap(s.xs.Index(i), s.xs.Index(j))
+	s.swapper.swap(s.xs.Index(i), s.xs.Index(j))
 }
 
 func (s *sortable) Len() int {

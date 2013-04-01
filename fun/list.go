@@ -23,7 +23,7 @@ func Map(f, xs interface{}) interface{} {
 	xsLen := vxs.Len()
 	vys := reflect.MakeSlice(tys, xsLen, xsLen)
 	for i := 0; i < xsLen; i++ {
-		vy := ty.Call1(vf, vxs.Index(i))
+		vy := call1(vf, vxs.Index(i))
 		vys.Index(i).Set(vy)
 	}
 	return vys.Interface()
@@ -45,7 +45,7 @@ func Filter(p, xs interface{}) interface{} {
 	vys := reflect.MakeSlice(tys, 0, xsLen)
 	for i := 0; i < xsLen; i++ {
 		vx := vxs.Index(i)
-		if ty.Call1(vp, vx).Bool() {
+		if call1(vp, vx).Bool() {
 			vys = reflect.Append(vys, vx)
 		}
 	}
@@ -65,15 +65,15 @@ func Foldl(f, init, xs interface{}) interface{} {
 	vf, vinit, vxs, tb := uni.Args[0], uni.Args[1], uni.Args[2], uni.Returns[0]
 
 	xsLen := vxs.Len()
-	vb := ty.ZeroValue(tb)
+	vb := zeroValue(tb)
 	vb.Set(vinit)
 	if xsLen == 0 {
 		return vb.Interface()
 	}
 
-	vb.Set(ty.Call1(vf, vxs.Index(0), vb))
+	vb.Set(call1(vf, vxs.Index(0), vb))
 	for i := 1; i < xsLen; i++ {
-		vb.Set(ty.Call1(vf, vxs.Index(i), vb))
+		vb.Set(call1(vf, vxs.Index(i), vb))
 	}
 	return vb.Interface()
 }
@@ -91,15 +91,15 @@ func Foldr(f, init, xs interface{}) interface{} {
 	vf, vinit, vxs, tb := uni.Args[0], uni.Args[1], uni.Args[2], uni.Returns[0]
 
 	xsLen := vxs.Len()
-	vb := ty.ZeroValue(tb)
+	vb := zeroValue(tb)
 	vb.Set(vinit)
 	if xsLen == 0 {
 		return vb.Interface()
 	}
 
-	vb.Set(ty.Call1(vf, vxs.Index(xsLen-1), vb))
+	vb.Set(call1(vf, vxs.Index(xsLen-1), vb))
 	for i := xsLen - 2; i >= 0; i-- {
-		vb.Set(ty.Call1(vf, vxs.Index(i), vb))
+		vb.Set(call1(vf, vxs.Index(i), vb))
 	}
 	return vb.Interface()
 }
@@ -153,7 +153,7 @@ func ParMap(f, xs interface{}) interface{} {
 		wg.Add(1)
 		go func() {
 			for j := range work {
-				ys.Index(j).Set(ty.Call1(vf, vxs.Index(j)))
+				ys.Index(j).Set(call1(vf, vxs.Index(j)))
 			}
 			wg.Done()
 		}()
