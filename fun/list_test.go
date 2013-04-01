@@ -51,6 +51,12 @@ func TestConcat(t *testing.T) {
 	assertDeep(t, flat, []int{1, 2, 3, 4, 5, 6, 7, 8, 9})
 }
 
+func TestReverse(t *testing.T) {
+	reversed := Reverse([]int{1, 2, 3, 4, 5}).([]int)
+
+	assertDeep(t, reversed, []int{5, 4, 3, 2, 1})
+}
+
 func TestPointers(t *testing.T) {
 	type temp struct {
 		val int
