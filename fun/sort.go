@@ -22,11 +22,6 @@ func QuickSort(less, xs interface{}) interface{} {
 		less, xs)
 	vless, vxs, tys := uni.Args[0], uni.Args[1], uni.Returns[0]
 
-	// TODO(burntsushi): This needs to be adjusted so that the algorithm
-	// operates on a surrogate slice of indices into `vxs`, so that the only
-	// reflection in the implementation is the invocation of `less`.
-	// Then `vys` can be constructed from the sorted list of indices.
-
 	var qsort func(left, right int)
 	var partition func(left, right, pivot int) int
 	xsind := Range(0, vxs.Len())

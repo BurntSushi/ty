@@ -16,7 +16,7 @@ import (
 // `recv`. The caller must send data on the `send` channel and receive data on
 // the `recv` channel.
 //
-// Implementation is based on Kyle Lemons' work:
+// Implementation is inspired by Kyle Lemons' work:
 // https://github.com/kylelemons/iq/blob/master/iq_slice.go
 func AsyncChan(baseChan interface{}) (send, recv interface{}) {
 	chk := ty.Check(
