@@ -77,8 +77,8 @@ type Typed struct {
 //		// `vf` and `vxs` are `reflect.Value`s of `f` and `xs`.
 //		vf, vxs := uni.Args[0], uni.Args[1]
 //
-//		// `tys` is a `reflect.Type` of `[]ty.B` replaced with the return type
-//		// of the given function `f`.
+//		// `tys` is a `reflect.Type` of `[]ty.B` where `ty.B` is replaced
+//		// with the return type of the given function `f`.
 //		tys := uni.Returns[0]
 //
 //		// Given the promise of `Check`, we now know that `vf` has
