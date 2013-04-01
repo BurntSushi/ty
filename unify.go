@@ -82,10 +82,10 @@ type Typed struct {
 //		tys := uni.Returns[0]
 //
 //		// Given the promise of `Check`, we now know that `vf` has
-//		// type `func(A) B` and `vxs` has type `[]A`.
+//		// type `func(ty.A) ty.B` and `vxs` has type `[]ty.A`.
 //		xsLen := vxs.Len()
 //
-//		// Constructs a new slice which will have type `[]B`.
+//		// Constructs a new slice which will have type `[]ty.B`.
 //		vys := reflect.MakeSlice(tys, xsLen, xsLen)
 //
 //		// Actually perform the `Map` operation, but in the world of
