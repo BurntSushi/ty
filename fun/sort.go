@@ -22,9 +22,6 @@ func QuickSort(less, xs interface{}) interface{} {
 		less, xs)
 	vless, vxs, tys := uni.Args[0], uni.Args[1], uni.Returns[0]
 
-	vys := reflect.MakeSlice(tys, vxs.Len(), vxs.Len())
-	reflect.Copy(vys, vxs)
-
 	// TODO(burntsushi): This needs to be adjusted so that the algorithm
 	// operates on a surrogate slice of indices into `vxs`, so that the only
 	// reflection in the implementation is the invocation of `less`.
@@ -32,7 +29,7 @@ func QuickSort(less, xs interface{}) interface{} {
 
 	var qsort func(left, right int)
 	var partition func(left, right, pivot int) int
-	swapper := swapperOf(vys.Type().Elem())
+	xsind := Range(0, vxs.Len())
 
 	qsort = func(left, right int) {
 		if left >= right {
@@ -45,21 +42,27 @@ func QuickSort(less, xs interface{}) interface{} {
 		qsort(pivot+1, right)
 	}
 	partition = func(left, right, pivot int) int {
-		swapper.swap(vys.Index(pivot), vys.Index(right))
-		vpivot := vys.Index(right)
+		vpivot := xsind[pivot]
+		xsind[pivot], xsind[right] = xsind[right], xsind[pivot]
 
 		ind := left
 		for i := left; i < right; i++ {
-			temp := vys.Index(i)
-			if call1(vless, temp, vpivot).Bool() {
-				swapper.swap(temp, vys.Index(ind))
+			if call1(vless, vxs.Index(xsind[i]), vxs.Index(vpivot)).Bool() {
+				xsind[i], xsind[ind] = xsind[ind], xsind[i]
 				ind++
 			}
 		}
-		swapper.swap(vys.Index(ind), vys.Index(right))
+		xsind[ind], xsind[right] = xsind[right], xsind[ind]
 		return ind
 	}
-	qsort(0, vys.Len()-1)
+
+	// Sort `xsind` in place.
+	qsort(0, len(xsind)-1)
+
+	vys := reflect.MakeSlice(tys, len(xsind), len(xsind))
+	for i, xsIndex := range xsind {
+		vys.Index(i).Set(vxs.Index(xsIndex))
+	}
 	return vys.Interface()
 }
 
