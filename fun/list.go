@@ -125,6 +125,7 @@ func Concat(xs interface{}) interface{} {
 
 // ParMap has a parametric type:
 //
+//	func ParMap(f func(A) B, xs []A) []B
 //	func Map(f func(A) B, xs []A) []B
 //
 // ParMap is just like Map, except it applies `f` to each element in `xs`
