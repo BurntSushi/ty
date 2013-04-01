@@ -68,21 +68,47 @@ type Typed struct {
 // information:
 //
 //	func Map(f, xs interface{}) interface{} {
+//		// Given the parametric type and the input arguments, Check will
+//		// return all the reflection information you need to write `Map`.
 //		uni := ty.Check(
 //			new(func(func(ty.A) ty.B, []ty.A) []ty.B),
 //			f, xs)
-//		vf, vxs, tys := uni.Args[0], uni.Args[1], uni.Returns[0]
 //
+//		// `vf` and `vxs` are `reflect.Value`s of `f` and `xs`.
+//		vf, vxs := uni.Args[0], uni.Args[1]
+//
+//		// `tys` is a `reflect.Type` of `[]ty.B` replaced with the return type
+//		// of the given function `f`.
+//		tys := uni.Returns[0]
+//
+//		// Given the promise of `Check`, we now know that `vf` has
+//		// type `func(A) B` and `vxs` has type `[]A`.
 //		xsLen := vxs.Len()
+//
+//		// Constructs a new slice which will have type `[]B`.
 //		vys := reflect.MakeSlice(tys, xsLen, xsLen)
+//
+//		// Actually perform the `Map` operation, but in the world of
+//		// reflection.
 //		for i := 0; i < xsLen; i++ {
 //			vy := ty.Call1(vf, vxs.Index(i))
 //			vys.Index(i).Set(vy)
 //		}
+//
+//		// The `reflect.Value.Interface` method is how we exit the world of
+//		// reflection. The onus is now on the caller to type assert it to
+//		// the appropriate type.
 //		return vys.Interface()
 //	}
 //
-// And while writing such functions is inconvenient, invoking them is simple:
+// Working in the reflection world is certainly more inconvenient than writing
+// regular Go code, but the information and invariants held by `Check` provide
+// a more convenient experience than normal. (Notice that there is not complex
+// logic involving type switching, since `Check` guarantees the types are
+// consistent with the inputs for us.)
+//
+// And while writing such functions is still not so convenient,
+// invoking them is simple:
 //
 //	square := func(x int) int { return x * x }
 //	squared := Map(square, []int{1, 2, 3, 4, 5}).([]int)
