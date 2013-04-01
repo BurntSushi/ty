@@ -123,6 +123,25 @@ func Concat(xs interface{}) interface{} {
 	return vflat.Interface()
 }
 
+// Reverse has a parametric type:
+//
+//	func Reverse(xs []A) []A
+//
+// Reverse returns a new slice that is the reverse of `xs`.
+func Reverse(xs interface{}) interface{} {
+	chk := ty.Check(
+		new(func([]ty.A) []ty.A),
+		xs)
+	vxs, tys := chk.Args[0], chk.Returns[0]
+
+	xsLen := vxs.Len()
+	vys := reflect.MakeSlice(tys, xsLen, xsLen)
+	for i := 0; i < xsLen; i++ {
+		vys.Index(i).Set(vxs.Index(xsLen - 1 - i))
+	}
+	return vys.Interface()
+}
+
 // ParMap has a parametric type:
 //
 //	func ParMap(f func(A) B, xs []A) []B
