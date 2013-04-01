@@ -104,8 +104,9 @@ type Typed struct {
 // Working in the reflection world is certainly more inconvenient than writing
 // regular Go code, but the information and invariants held by `Check` provide
 // a more convenient experience than how one normally works with reflection.
-// (Notice that there is no complex logic involving type switching, since 
-// `Check` guarantees the types are consistent with the inputs for us.)
+// (Notice that there is no error-prone type switching or boiler plate to
+// construct new types, since `Check` guarantees the types are consistent 
+// with the inputs for us.)
 //
 // And while writing such functions is still not so convenient,
 // invoking them is simple:
