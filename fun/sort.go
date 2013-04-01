@@ -25,6 +25,11 @@ func QuickSort(less, xs interface{}) interface{} {
 	vys := reflect.MakeSlice(tys, vxs.Len(), vxs.Len())
 	reflect.Copy(vys, vxs)
 
+	// TODO(burntsushi): This needs to be adjusted so that the algorithm
+	// operates on a surrogate slice of indices into `vxs`, so that the only
+	// reflection in the implementation is the invocation of `less`.
+	// Then `vys` can be constructed from the sorted list of indices.
+
 	var qsort func(left, right int)
 	var partition func(left, right, pivot int) int
 	swapper := swapperOf(vys.Type().Elem())
