@@ -153,6 +153,10 @@ func ParMap(f, xs interface{}) interface{} {
 		wg.Add(1)
 		go func() {
 			for j := range work {
+				// Good golly miss molly. Is `reflect.Value.Index`
+				// safe to access/set from multiple goroutines?
+				// XXX: If not, we'll need an extra wave of allocation to
+				// use real slices of `reflect.Value`.
 				ys.Index(j).Set(call1(vf, vxs.Index(j)))
 			}
 			wg.Done()
