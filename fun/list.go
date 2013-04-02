@@ -15,10 +15,10 @@ import (
 // Map returns the list corresponding to the return value of applying
 // `f` to each element in `xs`.
 func Map(f, xs interface{}) interface{} {
-	uni := ty.Check(
+	chk := ty.Check(
 		new(func(func(ty.A) ty.B, []ty.A) []ty.B),
 		f, xs)
-	vf, vxs, tys := uni.Args[0], uni.Args[1], uni.Returns[0]
+	vf, vxs, tys := chk.Args[0], chk.Args[1], chk.Returns[0]
 
 	xsLen := vxs.Len()
 	vys := reflect.MakeSlice(tys, xsLen, xsLen)
@@ -36,10 +36,10 @@ func Map(f, xs interface{}) interface{} {
 // Filter returns a new list only containing the elements of `xs` that satisfy
 // the predicate `p`.
 func Filter(p, xs interface{}) interface{} {
-	uni := ty.Check(
+	chk := ty.Check(
 		new(func(func(ty.A) bool, []ty.A) []ty.A),
 		p, xs)
-	vp, vxs, tys := uni.Args[0], uni.Args[1], uni.Returns[0]
+	vp, vxs, tys := chk.Args[0], chk.Args[1], chk.Returns[0]
 
 	xsLen := vxs.Len()
 	vys := reflect.MakeSlice(tys, 0, xsLen)
@@ -59,10 +59,10 @@ func Filter(p, xs interface{}) interface{} {
 // Foldl reduces a list of A to a single element B using a left fold with
 // an initial value `init`.
 func Foldl(f, init, xs interface{}) interface{} {
-	uni := ty.Check(
+	chk := ty.Check(
 		new(func(func(ty.A, ty.B) ty.B, ty.B, []ty.A) ty.B),
 		f, init, xs)
-	vf, vinit, vxs, tb := uni.Args[0], uni.Args[1], uni.Args[2], uni.Returns[0]
+	vf, vinit, vxs, tb := chk.Args[0], chk.Args[1], chk.Args[2], chk.Returns[0]
 
 	xsLen := vxs.Len()
 	vb := zeroValue(tb)
@@ -85,10 +85,10 @@ func Foldl(f, init, xs interface{}) interface{} {
 // Foldr reduces a list of A to a single element B using a right fold with
 // an initial value `init`.
 func Foldr(f, init, xs interface{}) interface{} {
-	uni := ty.Check(
+	chk := ty.Check(
 		new(func(func(ty.A, ty.B) ty.B, ty.B, []ty.A) ty.B),
 		f, init, xs)
-	vf, vinit, vxs, tb := uni.Args[0], uni.Args[1], uni.Args[2], uni.Returns[0]
+	vf, vinit, vxs, tb := chk.Args[0], chk.Args[1], chk.Args[2], chk.Returns[0]
 
 	xsLen := vxs.Len()
 	vb := zeroValue(tb)
@@ -110,10 +110,10 @@ func Foldr(f, init, xs interface{}) interface{} {
 //
 // Concat returns a new flattened list by appending all elements of `xs`.
 func Concat(xs interface{}) interface{} {
-	uni := ty.Check(
+	chk := ty.Check(
 		new(func([][]ty.A) []ty.A),
 		xs)
-	vxs, tflat := uni.Args[0], uni.Returns[0]
+	vxs, tflat := chk.Args[0], chk.Returns[0]
 
 	xsLen := vxs.Len()
 	vflat := reflect.MakeSlice(tflat, 0, xsLen*3)
@@ -173,10 +173,10 @@ func ParMap(f, xs interface{}) interface{} {
 // of executing it concurrently will result in worse performance than using
 // a `Map`.
 func ParMapN(f, xs interface{}, n int) interface{} {
-	uni := ty.Check(
+	chk := ty.Check(
 		new(func(func(ty.A) ty.B, []ty.A) []ty.B),
 		f, xs)
-	vf, vxs, tys := uni.Args[0], uni.Args[1], uni.Returns[0]
+	vf, vxs, tys := chk.Args[0], chk.Args[1], chk.Returns[0]
 
 	xsLen := vxs.Len()
 	ys := reflect.MakeSlice(tys, xsLen, xsLen)
