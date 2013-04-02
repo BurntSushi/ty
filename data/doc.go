@@ -76,5 +76,7 @@ Which guarantees, at run-time, that the following cannot happen:
 	M.SetMapIndex(rkey, rval)
 	M.SetMapIndex(rkey2, rval2)
 
+The result is much more painful library code but only slightly more painful
+client code.
 */
 package data
