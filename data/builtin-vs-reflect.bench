@@ -1,23 +1,23 @@
 benchmark                   old ns/op    new ns/op    delta
-BenchmarkParMapSquare-12       406699       578175  +42.16%
-BenchmarkParMapPrime-12       5531296      5851194   +5.78%
-BenchmarkMapSquare-12            8123       456357  +5518.08%
-BenchmarkMapPrime-12         35648199     36294554   +1.81%
-BenchmarkSort-12               137120      7619879  +5457.09%
-BenchmarkQuickSort-12            2844      6420643  +225661.01%
+BenchmarkParMapSquare-12       408165       579966  +42.09%
+BenchmarkParMapPrime-12       5699699      5734196   +0.61%
+BenchmarkMapSquare-12            8338       451338  +5313.02%
+BenchmarkMapPrime-12         34296751     33981881   -0.92%
+BenchmarkSort-12               137377      7587809  +5423.35%
+BenchmarkQuickSort-12            2804      5990139  +213528.35%
 
 benchmark                  old allocs   new allocs    delta
 BenchmarkParMapSquare-12           21         2038  9604.76%
-BenchmarkParMapPrime-12          7062         9090   28.72%
-BenchmarkMapSquare-12               1         2014  201300.00%
-BenchmarkMapPrime-12             7061         9184   30.07%
-BenchmarkSort-12                    1        27013  2701200.00%
-BenchmarkQuickSort-12               1        22009  2200800.00%
+BenchmarkParMapPrime-12          7064         9073   28.44%
+BenchmarkMapSquare-12               1         2013  201200.00%
+BenchmarkMapPrime-12             6993         9255   32.35%
+BenchmarkSort-12                    1        27002  2700100.00%
+BenchmarkQuickSort-12               1        22059  2205800.00%
 
 benchmark                   old bytes    new bytes    delta
-BenchmarkParMapSquare-12         9139        60344  560.29%
-BenchmarkParMapPrime-12        156037       222674   42.71%
-BenchmarkMapSquare-12            8195        57922  606.80%
-BenchmarkMapPrime-12           154208       224197   45.39%
-BenchmarkSort-12                   35       881824  2519397.14%
-BenchmarkQuickSort-12            8192       726774  8771.75%
+BenchmarkParMapSquare-12         9128        60312  560.74%
+BenchmarkParMapPrime-12        156602       220682   40.92%
+BenchmarkMapSquare-12            8195        57877  606.25%
+BenchmarkMapPrime-12           152640       224896   47.34%
+BenchmarkSort-12                   35       880788  2516437.14%
+BenchmarkQuickSort-12            8192       735806  8882.01%
