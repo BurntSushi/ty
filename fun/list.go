@@ -148,12 +148,31 @@ func Reverse(xs interface{}) interface{} {
 //
 // ParMap is just like Map, except it applies `f` to each element in `xs`
 // concurrently using N worker goroutines (where N is the number of CPUs
-// available reported by the Go runtime).
+// available reported by the Go runtime). If you want to control the number
+// of goroutines spawned, use `ParMapN`.
 //
 // It is important that `f` not be a trivial operation, otherwise the overhead
 // of executing it concurrently will result in worse performance than using
 // a `Map`.
 func ParMap(f, xs interface{}) interface{} {
+	n := runtime.NumCPU()
+	if n < 1 {
+		n = 1
+	}
+	return ParMapN(f, xs, n)
+}
+
+// ParMapN has a parametric type:
+//
+//	func ParMapN(f func(A) B, xs []A, n int) []B
+//
+// ParMapN is just like Map, except it applies `f` to each element in `xs`
+// concurrently using `n` worker goroutines.
+//
+// It is important that `f` not be a trivial operation, otherwise the overhead
+// of executing it concurrently will result in worse performance than using
+// a `Map`.
+func ParMapN(f, xs interface{}, n int) interface{} {
 	uni := ty.Check(
 		new(func(func(ty.A) ty.B, []ty.A) []ty.B),
 		f, xs)
@@ -162,13 +181,12 @@ func ParMap(f, xs interface{}) interface{} {
 	xsLen := vxs.Len()
 	ys := reflect.MakeSlice(tys, xsLen, xsLen)
 
-	N := runtime.NumCPU()
-	if N < 1 {
-		N = 1
+	if n < 1 {
+		n = 1
 	}
-	work := make(chan int, N)
+	work := make(chan int, n)
 	wg := new(sync.WaitGroup)
-	for i := 0; i < N; i++ {
+	for i := 0; i < n; i++ {
 		wg.Add(1)
 		go func() {
 			for j := range work {

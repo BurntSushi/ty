@@ -1,6 +1,7 @@
 package fun
 
 import (
+	"math/rand"
 	"testing"
 )
 
@@ -12,10 +13,11 @@ func TestShuffle(t *testing.T) {
 }
 
 func TestSample(t *testing.T) {
+	rng := rand.New(rand.NewSource(0))
 	nums := Range(0, 100)
-	sample := Sample(nums, 2).([]int)
+	sample := SampleGen(nums, 3, rng).([]int)
 
-	pf("%v\n", sample)
+	assertDeep(t, Set([]int{35, 40, 50}), Set(sample))
 }
 
 func BenchmarkShuffle(b *testing.B) {
