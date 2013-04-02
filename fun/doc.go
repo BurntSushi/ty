@@ -74,5 +74,10 @@ Asynchronous channel without a fixed size buffer:
 		// do something with `i`
 	}
 
+Shuffle any slice in place:
+
+	jumbleMe := {"The", "quick", "brown", "fox"}
+	Shuffle(jumbleMe)
+
 */
 package fun
