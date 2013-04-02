@@ -76,7 +76,7 @@ Asynchronous channel without a fixed size buffer:
 
 Shuffle any slice in place:
 
-	jumbleMe := {"The", "quick", "brown", "fox"}
+	jumbleMe := []string{"The", "quick", "brown", "fox"}
 	Shuffle(jumbleMe)
 
 */
