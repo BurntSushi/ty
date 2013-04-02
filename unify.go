@@ -307,3 +307,14 @@ func tyvarName(t reflect.Type) string {
 	}
 	return t.Name()
 }
+
+// AssertType panics with a `TypeError` if `v` does not have type `t`.
+// Otherwise, it returns the `reflect.Value` of `v`.
+func AssertType(v interface{}, t reflect.Type) reflect.Value {
+	rv := reflect.ValueOf(v)
+	tv := rv.Type()
+	if tv != t {
+		ppe("Value '%v' has type '%s' but expected '%s'.", v, tv, t)
+	}
+	return rv
+}
