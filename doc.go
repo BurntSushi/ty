@@ -2,6 +2,10 @@
 Package ty provides utilities for writing type parametric functions with run
 time type safety.
 
+This package contains two sub-packages `fun` and `data` which define some
+potentially useful functions and abstractions using the type checker in
+this package.
+
 Requirements
 
 Go tip (or 1.1 when it's released) is required. This package will not work
