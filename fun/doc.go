@@ -55,7 +55,7 @@ Sorting any slice:
 
 Parallel map:
 
-	// Compute the prime factorization in parallel
+	// Compute the prime factorization concurrently
 	// for every integer in [1000, 10000].
 	primeFactors := func(n int) []int { // compute prime factors }
 	factors := ParMap(primeFactors, Range(1000, 10001)).([]int)
