@@ -2,7 +2,10 @@
 Package ty provides utilities for writing type parametric functions with run
 time safety.
 
-Go tip/1.1 is required
+Requirements
+
+Go tip (or 1.1 when it's released) is required. This package will not work
+with Go 1.0.x or earlier.
 
 The very foundation of this package only recently became possible with the
 addition of 3 new functions in the standard library `reflect` package:
