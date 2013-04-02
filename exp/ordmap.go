@@ -9,8 +9,8 @@ import (
 // OrdMap has a parametric type `OrdMap<K, V>` where `K` is the type
 // of the map's keys and `V` is the type of the map's values.
 type OrdMap struct {
-	m reflect.Value
-	keys reflect.Value
+	m            reflect.Value
+	keys         reflect.Value
 	ktype, vtype reflect.Type
 }
 
@@ -37,8 +37,8 @@ func OrderedMap(ktype, vtype interface{}) *OrdMap {
 	tmap, tkeys := chk.Returns[2], chk.Returns[3]
 
 	return &OrdMap{
-		m: reflect.MakeMap(tmap),
-		keys: reflect.MakeSlice(tkeys, 0, 10),
+		m:     reflect.MakeMap(tmap),
+		keys:  reflect.MakeSlice(tkeys, 0, 10),
 		ktype: tkey,
 		vtype: tval,
 	}
