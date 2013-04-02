@@ -2,7 +2,7 @@
 Package fun provides type parametric utility functions for lists, sets,
 channels and maps.
 
-The major contribution of this package is a set of functions that operate
+The central contribution of this package is a set of functions that operate
 on values without depending on their types while maintaining type safety at
 run time using the `reflect` package.
 
