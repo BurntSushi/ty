@@ -20,7 +20,8 @@ the type of the function: type assert the result to the desired type.
 When the caller provides values that are inconsistent with the parametric type
 of the function, the function will panic with a `TypeError`. (Either because
 the types cannot be unified or because they cannot be constructed due to
-limitations of the `reflect` package.)
+limitations of the `reflect` package. See the `github.com/BurntSushi/ty`
+package for more details.)
 
 Examples
 
@@ -48,9 +49,9 @@ Sorting any slice:
 		{"Darkness",    1978},
 		{"Greetings",   1973},
 	}
-	sorted := QuickSort(
-		func(a, b Album) bool { return a.Year < b.Year },
-		albums).([]Album)
+
+	less := func(a, b Album) bool { return a.Year < b.Year },
+	sorted := QuickSort(less, albums).([]Album)
 
 Parallel map:
 
