@@ -20,12 +20,12 @@ type OrdMap struct {
 //
 //	omap := OrderedMap(new(string), new(int))
 //
-// An ordered map maintains the insertion order of all keys into the map.
-// Namely, `(*OrdMap).Keys()` returns a slice of keys in the order in which
+// An ordered map maintains the insertion order of all keys in the map.
+// Namely, `(*OrdMap).Keys()` returns a slice of keys in the order
 // they were inserted. The order of a key can *only* be changed if it is
 // deleted and added again.
 //
-// An OrderedMap and all of its operations has the same time complexity as
+// All of the operations on an ordered map have the same time complexity as
 // the built-in `map`, except for `Delete` which is O(n) in the number of
 // keys.
 func OrderedMap(ktype, vtype interface{}) *OrdMap {
@@ -46,7 +46,7 @@ func OrderedMap(ktype, vtype interface{}) *OrdMap {
 
 // Exists has a parametric type:
 //
-//	(om *OrdMap<K, V>) Exists(key K) bool
+//	func (om *OrdMap<K, V>) Exists(key K) bool
 //
 // Exists returns true if `key` is in the map `om`.
 func (om *OrdMap) Exists(key interface{}) bool {
@@ -60,7 +60,7 @@ func (om *OrdMap) exists(rkey reflect.Value) bool {
 
 // Put has a parametric type:
 //
-//	(om *OrdMap<K, V>) Put(key K, val V)
+//	func (om *OrdMap<K, V>) Put(key K, val V)
 //
 // Put adds or overwrites `key` into the map `om` with value `val`.
 // If `key` already exists in the map, then its position in the ordering
@@ -76,7 +76,7 @@ func (om *OrdMap) Put(key, val interface{}) {
 
 // Get has a parametric type:
 //
-//	(om *OrdMap<K, V>) Get(key K) V
+//	func (om *OrdMap<K, V>) Get(key K) V
 //
 // Get retrieves the value in the map `om` corresponding to `key`. If the
 // value does not exist, then the zero value of type `V` is returned.
@@ -91,7 +91,7 @@ func (om *OrdMap) Get(key interface{}) interface{} {
 
 // TryGet has a parametric type:
 //
-//	(om *OrdMap<K, V>) TryGet(key K) (V, bool)
+//	func (om *OrdMap<K, V>) TryGet(key K) (V, bool)
 //
 // TryGet retrieves the value in the map `om` corresponding to `key` and
 // reports whether the value exists in the map or not. If the value does
@@ -107,7 +107,7 @@ func (om *OrdMap) TryGet(key interface{}) (interface{}, bool) {
 
 // Delete has a parametric type:
 //
-//	(om *OrdMap<K, V>) Delete(key K)
+//	func (om *OrdMap<K, V>) Delete(key K)
 //
 // Delete removes `key` from the map `om`.
 //
@@ -136,7 +136,7 @@ func (om *OrdMap) Delete(key interface{}) {
 
 // Keys has a parametric type:
 //
-//	(om *OrdMap<K, V>) Keys() []K
+//	func (om *OrdMap<K, V>) Keys() []K
 //
 // Keys returns a list of keys in `om` in the order they were inserted.
 //
@@ -147,7 +147,7 @@ func (om *OrdMap) Keys() interface{} {
 
 // Values has a parametric type:
 //
-//  (om *OrdMap<K, V>) Values() []V
+//  func (om *OrdMap<K, V>) Values() []V
 //
 // Values returns a shallow copy of the values in `om` in the order that they
 // were inserted.
@@ -163,7 +163,7 @@ func (om *OrdMap) Values() interface{} {
 
 // Len has a parametric type:
 //
-//	(om *OrdMap<K, V>) Len() int
+//	func (om *OrdMap<K, V>) Len() int
 //
 // Len returns the number of keys in the map `om`.
 func (om *OrdMap) Len() int {
