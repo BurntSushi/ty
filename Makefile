@@ -4,8 +4,7 @@ install:
 	go install ./...
 
 test: install
-	cd fun \
-	&& go test
+	go test ./...
 
 benchcmp: install
 	cd fun \
