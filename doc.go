@@ -1,6 +1,6 @@
 /*
 Package ty provides utilities for writing type parametric functions with run
-time safety.
+time type safety.
 
 Requirements
 
