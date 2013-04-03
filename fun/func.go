@@ -31,6 +31,5 @@ func Memo(f interface{}) interface{} {
 		saved[val] = ret
 		return []reflect.Value{ret}
 	}
-
 	return reflect.MakeFunc(vf.Type(), memo).Interface()
 }
