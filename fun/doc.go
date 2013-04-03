@@ -79,5 +79,27 @@ Shuffle any slice in place:
 	jumbleMe := []string{"The", "quick", "brown", "fox"}
 	Shuffle(jumbleMe)
 
+Function memoization:
+
+	// Memoizing a recursive function like `fibonacci`.
+	// Write it like normal:
+	var fib func(n int64) int64
+	fib = func(n int64) int64 {
+		switch n {
+		case 0:
+			return 0
+		case 1:
+			return 1
+		}
+		return fib(n - 1) + fib(n - 2)
+	}
+
+	// And wrap it with `Memo`.
+	fib = Memo(fib).(func(int64) int64)
+
+	// Will keep your CPU busy for a long time
+	// without memoization.
+	fmt.Println(fib(80))
+
 */
 package fun
