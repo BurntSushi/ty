@@ -1,5 +1,5 @@
 /*
-Package data tumbles down the rabbit hole into type parametric data types.
+Package data tumbles down the rabbit hole into parametric data types.
 
 A parametric data type in this package is a data type that is parameterized by
 one or more types discovered at run time. For example, an ordered map is
