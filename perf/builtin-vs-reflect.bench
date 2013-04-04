@@ -1,23 +1,35 @@
-benchmark                   old ns/op    new ns/op    delta
-BenchmarkParMapSquare-12       408165       579966  +42.09%
-BenchmarkParMapPrime-12       5699699      5734196   +0.61%
-BenchmarkMapSquare-12            8338       451338  +5313.02%
-BenchmarkMapPrime-12         34296751     33981881   -0.92%
-BenchmarkSort-12               137377      7587809  +5423.35%
-BenchmarkQuickSort-12            2804      5990139  +213528.35%
+benchmark                      old ns/op    new ns/op    delta
+BenchmarkFibonacciMemo-12           5895        43896  +644.63%
+BenchmarkFibonacciNoMemo-12      6827001      6829859   +0.04%
+BenchmarkParMapSquare-12          408320       572307  +40.16%
+BenchmarkParMapPrime-12          5289594      5510075   +4.17%
+BenchmarkMapSquare-12               8499       457844  +5287.03%
+BenchmarkMapPrime-12            34265372     32220176   -5.97%
+BenchmarkShuffle-12               240036      1018408  +324.27%
+BenchmarkSample-12                262565       271122   +3.26%
+BenchmarkSort-12                  137293      7716737  +5520.63%
+BenchmarkQuickSort-12               6325      6051563  +95576.89%
 
-benchmark                  old allocs   new allocs    delta
-BenchmarkParMapSquare-12           21         2038  9604.76%
-BenchmarkParMapPrime-12          7064         9073   28.44%
-BenchmarkMapSquare-12               1         2013  201200.00%
-BenchmarkMapPrime-12             6993         9255   32.35%
-BenchmarkSort-12                    1        27002  2700100.00%
-BenchmarkQuickSort-12               1        22059  2205800.00%
+benchmark                     old allocs   new allocs    delta
+BenchmarkFibonacciMemo-12             11          198  1700.00%
+BenchmarkFibonacciNoMemo-12            0            0     n/a%
+BenchmarkParMapSquare-12              21         2038  9604.76%
+BenchmarkParMapPrime-12             7148         9160   28.15%
+BenchmarkMapSquare-12                  1         2014  201300.00%
+BenchmarkMapPrime-12                7105         9173   29.11%
+BenchmarkShuffle-12                    0            7     n/a%
+BenchmarkSample-12                     2           11  450.00%
+BenchmarkSort-12                       1        27032  2703100.00%
+BenchmarkQuickSort-12                  1        22008  2200700.00%
 
-benchmark                   old bytes    new bytes    delta
-BenchmarkParMapSquare-12         9128        60312  560.74%
-BenchmarkParMapPrime-12        156602       220682   40.92%
-BenchmarkMapSquare-12            8195        57877  606.25%
-BenchmarkMapPrime-12           152640       224896   47.34%
-BenchmarkSort-12                   35       880788  2516437.14%
-BenchmarkQuickSort-12            8192       735806  8882.01%
+benchmark                      old bytes    new bytes    delta
+BenchmarkFibonacciMemo-12           2449        12083  393.39%
+BenchmarkFibonacciNoMemo-12            0            0     n/a%
+BenchmarkParMapSquare-12            9127        60330  561.01%
+BenchmarkParMapPrime-12           156540       222731   42.28%
+BenchmarkMapSquare-12               8195        58053  608.40%
+BenchmarkMapPrime-12              155952       221255   41.87%
+BenchmarkShuffle-12                    0          500     n/a%
+BenchmarkSample-12                 82785        83383    0.72%
+BenchmarkSort-12                      35       883869  2525240.00%
+BenchmarkQuickSort-12               8195       735645  8876.75%
