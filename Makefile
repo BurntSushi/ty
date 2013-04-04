@@ -12,7 +12,7 @@ benchcmp: install
 	&& go test -cpu 12 -run NONE -benchmem -bench . > reflect.bench \
 	&& echo "Running built in benchmarks..." \
 	&& go test -cpu 12 -run NONE -benchmem -bench . -builtin > builtin.bench  \
-	&& benchcmp builtin.bench reflect.bench > ../data/cmp.bench \
+	&& benchcmp builtin.bench reflect.bench > ../perf/cmp.bench \
 	&& rm builtin.bench reflect.bench
 
 fmt:
