@@ -12,7 +12,7 @@ func TestMap(t *testing.T) {
 	assertDeep(t, []int{}, Map(square, []int{}).([]int))
 
 	strlen := func(s string) int { return len(s) }
-	lens := Map(strlen, []string{"abc", "ab", "a"})
+	lens := Map(strlen, []string{"abc", "ab", "a"}).([]int)
 	assertDeep(t, lens, []int{3, 2, 1})
 }
 
