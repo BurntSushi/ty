@@ -44,7 +44,7 @@ type Typed struct {
 // environment mapping type variables to `reflect.Type`.
 //
 // The power of `Check` comes from the following invariant: if `Check` returns,
-// then the types of the input arguments corresponding to `as` are consistent
+// then the types of the arguments corresponding to `as` are consistent
 // with the parametric type of `f`, *and* the parametric return types of `f`
 // were made into valid Go types that are not parametric. Otherwise, there is
 // a bug in `Check`.
@@ -68,7 +68,7 @@ type Typed struct {
 // information:
 //
 //	func Map(f, xs interface{}) interface{} {
-//		// Given the parametric type and the input arguments, Check will
+//		// Given the parametric type and the arguments, Check will
 //		// return all the reflection information you need to write `Map`.
 //		uni := ty.Check(
 //			new(func(func(ty.A) ty.B, []ty.A) []ty.B),
@@ -123,10 +123,10 @@ type Typed struct {
 // panic.
 //
 // Also, type variables inside of structs are ignored in the types of the
-// input arguments `as`. This restriction may be lifted in the future.
+// arguments `as`. This restriction may be lifted in the future.
 //
 // To be clear: type variables *may* appear in arrays or functions in the types
-// of the input arguments `as`.
+// of the arguments `as`.
 func Check(f interface{}, as ...interface{}) *Typed {
 	rf := reflect.ValueOf(f)
 	tf := rf.Type()
@@ -197,7 +197,7 @@ func (tp typePair) panic(format string, v ...interface{}) {
 func (tp typePair) unify(param, input reflect.Type) {
 	if tyname := tyvarName(input); len(tyname) > 0 {
 		tp.panic("Type variables are not allowed in the types of " +
-			"input arguments.")
+			"arguments.")
 	}
 	if tyname := tyvarName(param); len(tyname) > 0 {
 		if cur, ok := tp.tyenv[tyname]; ok && cur != input {
