@@ -180,7 +180,7 @@ type typePair struct {
 }
 
 func (tp typePair) panic(format string, v ...interface{}) {
-	ppe("Error unifying type '%s' and '%s': %s",
+	ppe("Type error when unifying type '%s' and '%s': %s",
 		tp.param, tp.input, fmt.Sprintf(format, v...))
 }
 
@@ -201,15 +201,16 @@ func (tp typePair) unify(param, input reflect.Type) {
 	}
 	if tyname := tyvarName(param); len(tyname) > 0 {
 		if cur, ok := tp.tyenv[tyname]; ok && cur != input {
-			tp.panic("Type variable %s cannot be bound to %s, as it is "+
-				"already bound to %s.", tyname, input, cur)
+			tp.panic("Type variable %s expected type '%s' but got '%s'.",
+				tyname, cur, input)
 		} else if !ok {
 			tp.tyenv[tyname] = input
 		}
 		return
 	}
 	if param.Kind() != input.Kind() {
-		tp.panic("Cannot unify '%s' with '%s'.", param, input)
+		tp.panic("Cannot unify different kinds of types '%s' with '%s'.",
+			param, input)
 	}
 
 	switch param.Kind() {
