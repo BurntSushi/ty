@@ -17,10 +17,10 @@ import (
 // `less` should be a function that returns true if and only if `x1` is less
 // than `x2`.
 func QuickSort(less, xs interface{}) interface{} {
-	uni := ty.Check(
+	chk := ty.Check(
 		new(func(func(ty.A, ty.A) bool, []ty.A) []ty.A),
 		less, xs)
-	vless, vxs, tys := uni.Args[0], uni.Args[1], uni.Returns[0]
+	vless, vxs, tys := chk.Args[0], chk.Args[1], chk.Returns[0]
 
 	var qsort func(left, right int)
 	var partition func(left, right, pivot int) int
@@ -70,11 +70,11 @@ func QuickSort(less, xs interface{}) interface{} {
 // `less` should be a function that returns true if and only if `x1` is less
 // than `x2`.
 func Sort(less, xs interface{}) {
-	uni := ty.Check(
+	chk := ty.Check(
 		new(func(func(ty.A, ty.A) bool, []ty.A)),
 		less, xs)
 
-	vless, vxs := uni.Args[0], uni.Args[1]
+	vless, vxs := chk.Args[0], chk.Args[1]
 	sort.Sort(&sortable{vless, vxs, swapperOf(vxs.Type().Elem())})
 }
 

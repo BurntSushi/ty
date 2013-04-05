@@ -10,6 +10,10 @@ func TestMap(t *testing.T) {
 
 	assertDeep(t, squares, []int{1, 4, 9, 16, 25})
 	assertDeep(t, []int{}, Map(square, []int{}).([]int))
+
+	strlen := func(s string) int { return len(s) }
+	lens := Map(strlen, []string{"abc", "ab", "a"}).([]int)
+	assertDeep(t, lens, []int{3, 2, 1})
 }
 
 func TestFilter(t *testing.T) {
