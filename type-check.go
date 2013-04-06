@@ -3,6 +3,7 @@ package ty
 import (
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 // TypeError corresponds to any error reported by the `Check` function.
@@ -155,7 +156,14 @@ func Check(f interface{}, as ...interface{}) *Typed {
 		tp := typePair{tyenv, tf.In(i), args[i].Type()}
 
 		// Mutates the type variable environment.
-		tp.unify(tp.param, tp.input)
+		if err := tp.unify(tp.param, tp.input); err != nil {
+			argTypes := make([]string, len(args))
+			for i := range args {
+				argTypes[i] = args[i].Type().String()
+			}
+			ppe("\nError type checking\n\t%s\nwith argument types\n\t(%s)\n%s",
+				tf, strings.Join(argTypes, ", "), err)
+		}
 	}
 
 	// Now substitute those types into the return types of `f`.
@@ -179,8 +187,8 @@ type typePair struct {
 	input reflect.Type
 }
 
-func (tp typePair) panic(format string, v ...interface{}) {
-	ppe("Type error when unifying type '%s' and '%s': %s",
+func (tp typePair) error(format string, v ...interface{}) error {
+	return pe("Type error when unifying type '%s' and '%s': %s",
 		tp.param, tp.input, fmt.Sprintf(format, v...))
 }
 
@@ -194,58 +202,65 @@ func (tp typePair) panic(format string, v ...interface{}) {
 //
 // The end result of unification is a type environment: a set of substitutions
 // from type variable to a Go type.
-func (tp typePair) unify(param, input reflect.Type) {
+func (tp typePair) unify(param, input reflect.Type) error {
 	if tyname := tyvarName(input); len(tyname) > 0 {
-		tp.panic("Type variables are not allowed in the types of " +
+		return tp.error("Type variables are not allowed in the types of " +
 			"arguments.")
 	}
 	if tyname := tyvarName(param); len(tyname) > 0 {
 		if cur, ok := tp.tyenv[tyname]; ok && cur != input {
-			tp.panic("Type variable %s expected type '%s' but got '%s'.",
+			return tp.error("Type variable %s expected type '%s' but got '%s'.",
 				tyname, cur, input)
 		} else if !ok {
 			tp.tyenv[tyname] = input
 		}
-		return
+		return nil
 	}
 	if param.Kind() != input.Kind() {
-		tp.panic("Cannot unify different kinds of types '%s' with '%s'.",
+		return tp.error("Cannot unify different kinds of types '%s' and '%s'.",
 			param, input)
 	}
 
 	switch param.Kind() {
 	case reflect.Array:
-		tp.unify(param.Elem(), input.Elem())
+		return tp.unify(param.Elem(), input.Elem())
 	case reflect.Chan:
 		if param.ChanDir() != input.ChanDir() {
-			tp.panic("Cannot unify '%s' with '%s' (channel directions are "+
-				"different: '%s' != '%s').",
+			return tp.error("Cannot unify '%s' with '%s' "+
+				"(channel directions are different: '%s' != '%s').",
 				param, input, param.ChanDir(), input.ChanDir())
 		}
-		tp.unify(param.Elem(), input.Elem())
+		return tp.unify(param.Elem(), input.Elem())
 	case reflect.Func:
 		if param.NumIn() != input.NumIn() || param.NumOut() != input.NumOut() {
-			tp.panic("Cannot unify '%s' with '%s'.", param, input)
+			return tp.error("Cannot unify '%s' with '%s'.", param, input)
 		}
 		for i := 0; i < param.NumIn(); i++ {
-			tp.unify(param.In(i), input.In(i))
+			if err := tp.unify(param.In(i), input.In(i)); err != nil {
+				return err
+			}
 		}
 		for i := 0; i < param.NumOut(); i++ {
-			tp.unify(param.Out(i), input.Out(i))
+			if err := tp.unify(param.Out(i), input.Out(i)); err != nil {
+				return err
+			}
 		}
 	case reflect.Map:
-		tp.unify(param.Key(), input.Key())
-		tp.unify(param.Elem(), input.Elem())
+		if err := tp.unify(param.Key(), input.Key()); err != nil {
+			return err
+		}
+		return tp.unify(param.Elem(), input.Elem())
 	case reflect.Ptr:
-		tp.unify(param.Elem(), input.Elem())
+		return tp.unify(param.Elem(), input.Elem())
 	case reflect.Slice:
-		tp.unify(param.Elem(), input.Elem())
+		return tp.unify(param.Elem(), input.Elem())
 	}
 
 	// The only other container types are Interface and Struct.
 	// I am unsure about what to do with interfaces. Mind is fuzzy.
 	// Structs? I don't think it really makes much sense to use type
 	// variables inside of them.
+	return nil
 }
 
 // returnType corresponds to the type of a single return value of a function,
