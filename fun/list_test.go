@@ -61,6 +61,15 @@ func TestReverse(t *testing.T) {
 	assertDeep(t, reversed, []int{5, 4, 3, 2, 1})
 }
 
+func TestCopy(t *testing.T) {
+	orig := []int{1, 2, 3, 4, 5}
+	copied := Copy(orig).([]int)
+
+	orig[1] = 999
+
+	assertDeep(t, copied, []int{1, 2, 3, 4, 5})
+}
+
 func TestPointers(t *testing.T) {
 	type temp struct {
 		val int

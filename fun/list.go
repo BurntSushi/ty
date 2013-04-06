@@ -142,6 +142,23 @@ func Reverse(xs interface{}) interface{} {
 	return vys.Interface()
 }
 
+// Copy has a parametric type:
+//
+//	func Copy(xs []A) []A
+//
+// Copy returns a copy of `xs` using Go's `copy` operation.
+func Copy(xs interface{}) interface{} {
+	chk := ty.Check(
+		new(func([]ty.A) []ty.A),
+		xs)
+	vxs, tys := chk.Args[0], chk.Returns[0]
+
+	xsLen := vxs.Len()
+	vys := reflect.MakeSlice(tys, xsLen, xsLen)
+	reflect.Copy(vys, vxs)
+	return vys.Interface()
+}
+
 // ParMap has a parametric type:
 //
 //	func ParMap(f func(A) B, xs []A) []B
