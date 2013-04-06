@@ -6,8 +6,8 @@ The central contribution of this package is a set of functions that operate
 on values without depending on their types while maintaining type safety at
 run time using the `reflect` package.
 
-The use cases of this package still aren't clear, but there are two primary
-concerns: the loss of compile time type safety and performance. In particular,
+There are two primary concerns when deciding whether to use this package
+or not: the loss of compile time type safety and performance. In particular,
 with regard to performance, most functions here are much slower than their
 built-in counter parts. However, there are a couple where the overhead of
 reflection is relatively insignificant: AsyncChan and ParMap.
