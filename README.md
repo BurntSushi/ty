@@ -18,6 +18,13 @@ dynamically construct types at run time from component types.
 Further extensions to this package can be made if similar functions are added
 for structs and functions(?).
 
+## Installation
+
+```bash
+go get github.com/BurntSushi/ty
+go get github.com/BurntSushi/ty/fun
+```
+
 ## Examples
 
 Squaring each integer in a slice:
