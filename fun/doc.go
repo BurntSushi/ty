@@ -23,6 +23,19 @@ the types cannot be unified or because they cannot be constructed due to
 limitations of the `reflect` package. See the `github.com/BurntSushi/ty`
 package for more details.)
 
+Requirements
+
+Go tip (or 1.1 when it's released) is required. This package will not work
+with Go 1.0.x or earlier.
+
+The very foundation of this package only recently became possible with the
+addition of 3 new functions in the standard library `reflect` package:
+SliceOf, MapOf and ChanOf. In particular, it provides the ability to
+dynamically construct types at run time from component types.
+
+Further extensions to this package can be made if similar functions are added
+for structs and functions(?).
+
 Examples
 
 Squaring each integer in a slice:
