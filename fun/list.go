@@ -8,6 +8,69 @@ import (
 	"github.com/BurntSushi/ty"
 )
 
+// All has a parametric type:
+//
+//	func All(p func(A) bool, xs []A) bool
+//
+// All returns `true` if and only if every element in `xs` satisfies `p`.
+func All(f, xs interface{}) bool {
+	chk := ty.Check(
+		new(func(func(ty.A) bool, []ty.A) bool),
+		f, xs)
+	vf, vxs := chk.Args[0], chk.Args[1]
+
+	xsLen := vxs.Len()
+	for i := 0; i < xsLen; i++ {
+		if !call1(vf, vxs.Index(i)).Interface().(bool) {
+			return false
+		}
+	}
+	return true
+}
+
+// Exists has a parametric type:
+//
+//	func Exists(p func(A) bool, xs []A) bool
+//
+// Exists returns `true` if and only if an element in `xs` satisfies `p`.
+func Exists(f, xs interface{}) bool {
+	chk := ty.Check(
+		new(func(func(ty.A) bool, []ty.A) bool),
+		f, xs)
+	vf, vxs := chk.Args[0], chk.Args[1]
+
+	xsLen := vxs.Len()
+	for i := 0; i < xsLen; i++ {
+		if call1(vf, vxs.Index(i)).Interface().(bool) {
+			return true
+		}
+	}
+	return false
+}
+
+// In has a parametric type:
+//
+//	func In(needle A, haystack []A) bool
+//
+// In returns `true` if and only if `v` can be found in `xs`. The equality test
+// used is Go's standard `==` equality and NOT deep equality.
+//
+// Note that this requires that `A` be a type that can be meaningfully compared.
+func In(needle, haystack interface{}) bool {
+	chk := ty.Check(
+		new(func(ty.A, []ty.A) bool),
+		needle, haystack)
+	vhaystack := chk.Args[1]
+
+	length := vhaystack.Len()
+	for i := 0; i < length; i++ {
+		if vhaystack.Index(i).Interface() == needle {
+			return true
+		}
+	}
+	return false
+}
+
 // Map has a parametric type:
 //
 //	func Map(f func(A) B, xs []A) []B
