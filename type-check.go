@@ -299,7 +299,9 @@ func (rt returnType) tysubst(typ reflect.Type) reflect.Type {
 	case reflect.Func:
 		rt.panic("Cannot dynamically create Function types.")
 	case reflect.Interface:
-		rt.panic("TODO")
+		// rt.panic("TODO")
+		// Not sure if this is right.
+		return typ
 	case reflect.Map:
 		return reflect.MapOf(rt.tysubst(typ.Key()), rt.tysubst(typ.Elem()))
 	case reflect.Ptr:
