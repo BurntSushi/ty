@@ -209,8 +209,10 @@ func (tp typePair) unify(param, input reflect.Type) error {
 	}
 	if tyname := tyvarName(param); len(tyname) > 0 {
 		if cur, ok := tp.tyenv[tyname]; ok && cur != input {
-			return tp.error("Type variable %s expected type '%s' but got '%s'.",
-				tyname, cur, input)
+            if cur.Kind() != reflect.Interface {
+			    return tp.error("Type variable %s expected type '%s' but got '%s'.",
+				    tyname, cur, input)
+            }
 		} else if !ok {
 			tp.tyenv[tyname] = input
 		}
